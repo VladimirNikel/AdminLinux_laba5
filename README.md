@@ -85,7 +85,7 @@ sudo lvs
 ```
 sudo mkfs.ext4 /dev/mai/first
 sudo mount /dev/mai/first /mnt
-mount
+sudo mount
 ```
 
 Много всего отобразилось, но всё без ошибок:
@@ -133,10 +133,10 @@ sudo df -h
 12) Но вот, живет наш том, никого не трогает, но вот мы понимаем, что нужно срочно выделить дополнительные 500 Мб и мы принимаем решение уменьшить объем файловой системы и самого логического тома. Воспользуемся командами:
 ```
 sudo umount /mnt
-sudo e2fsck -fy /dev/mai/first
-sudo resize2fs /dev/mai/first 1400M
-sudo lvreduce /dev/mai/first -L 1400M
-sudo e2fsck -fy /dev/mai/first
+sudo fsck -fy /dev/mai/first
+sudo resize2fs /dev/mai/first 1200M             sudo resize2fs -M /dev/mai/first
+sudo lvreduce /dev/mai/first -L 1200M           sudo lvreduce /dev/mai/first -L 1200M
+sudo fsck -fy /dev/mai/first
 sudo mount /dev/mai/first /mnt
 sudo df -h
 ```
@@ -145,10 +145,20 @@ sudo df -h
 ![](https://sun9-40.userapi.com/N2HNDF0iieS7bnaLCfZGCJ6tHKtyZNxTfNeJ4w/6ZSRmsRm3nk.jpg "Ошибка... Точка монтирования отсутсвует")
 
 
+Тоже самое получил, когда проделал все вышеописанные шаги уже на другой виртуалке, с новыми дисками, они уже были с фиксированным значением в 1 Gb (а не динамическими)... Собственно:
+
+![](https://sun9-52.userapi.com/bnkS05oH-Rw1ZHUUqUbovn9h2QtyUnZIBJ6LMA/-JxVQ4j330E.jpg "Та же проблема")
+
+
+
+
+
+
+
 
 
 ------------
 
-На этом лабораторную работу считаю завершенной.
+На этом лабораторную работу **не** считаю завершенной.
 
 Nikel, 2020
