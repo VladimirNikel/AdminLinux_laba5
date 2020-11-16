@@ -103,6 +103,48 @@ sudo df -h
 
 ![](https://sun9-53.userapi.com/dJS_vuoCvWuzTSCf1YYr3gFUZwrDL0ZhvrWUWg/qpxjeAnKxlc.jpg "")
 
+10) Произведем расширение логического тома, за счет добавления нового физического диска. Для этого понадобится выполнить команды:
+```
+sudo pvcreate /dev/sdc
+sudo vgextend mai /dev/sdc
+sudo lvextend -l+100%FREE /dev/mai/first
+sudo lvdisplay
+sudo lvs
+sudo df -h
+```
+
+Вот что получилось в результате выполнения жанных команд:
+
+![Результат добавления нового диска в логический том](https://sun9-45.userapi.com/4QrF0b_56gv2AOV_2SFZ4DZfspu5VabDosZ4sg/M0kMb6GPlbI.jpg "Результат добавления нового диска в логический том")
+
+Всё верно, нужно расширить не только физ.пространство тома, но и файловую систему.
+
+11) Расширим файловую систему, для этого выполним команды:
+```
+sudo resize2fs /dev/mai/first
+sudo df -h
+```
+
+Теперь уже есть доступное место, собственно, это и видно из результатов выполнения приведенных команд:
+
+![Результат расширения файловой системы](https://sun9-24.userapi.com/5NBnB9fU4KqD-GBQH9jWx0skPYChhUBYkm1VdA/HyD37AjzF14.jpg "Результат расширения файловой системы")
+
+
+12) Но вот, живет наш том, никого не трогает, но вот мы понимаем, что нужно срочно выделить дополнительные 500 Мб и мы принимаем решение уменьшить объем файловой системы и самого логического тома. Воспользуемся командами:
+```
+sudo umount /mnt
+sudo e2fsck -fy /dev/mai/first
+sudo resize2fs /dev/mai/first 1400M
+sudo lvreduce /dev/mai/first -L 1400M
+sudo e2fsck -fy /dev/mai/first
+sudo mount /dev/mai/first /mnt
+sudo df -h
+```
+
+И тут я наткнулся на проблему...
+![](https://sun9-40.userapi.com/N2HNDF0iieS7bnaLCfZGCJ6tHKtyZNxTfNeJ4w/6ZSRmsRm3nk.jpg "Ошибка... Точка монтирования отсутсвует")
+
+
 
 
 ------------
