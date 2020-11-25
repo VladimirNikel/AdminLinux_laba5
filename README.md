@@ -229,6 +229,7 @@ ls /mnt
 ```
 
 Результат восстановления из снимка (файлы на месте):
+
 ![Результат восстановления из снимка](https://sun9-41.userapi.com/impf/ss9cYGyIfplud8RntEJImYboGtQc82FchuJQrg/dUj2liMyY1k.jpg?size=601x289&quality=96&proxy=1&sign=2579668599b2a2c219a938b6dc243666 "Результат восстановления из снимка")
 
 
