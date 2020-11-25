@@ -183,6 +183,80 @@ sudo df -h
 ![Результат уменьшения объема логического тома](https://sun9-76.userapi.com/impf/j2_0rKWGd7gyCNjumbmndOENzcKpkLhUDdQ5Rw/j_qEcO3V9BI.jpg?size=912x848&quality=96&proxy=1&sign=6e1709c1ff0c70ca9222cd42d0d44217 "Результат уменьшения объема логического тома")
 
 
+13) Создадим несколько файлов и сделаем снимок. Для этого выполним следующую последовательность команд:
+```
+sudo touch /mnt/file{1..5}
+ls /mnt
+sudo lvs
+sudo lsblk
+```
+
+Результат создания новых файлов и создания снимка:
+
+![Результат создания новых файлов и создания снимка](https://sun9-48.userapi.com/impf/BRlOgbTtAIVkYbFPh_vZ8yoiXR2t4UG_b-mQLA/-t_SweuaFos.jpg?size=766x692&quality=96&proxy=1&sign=c46223ad66826445188df87d4f1dd539 "Результат создания новых файлов и создания снимка")
+
+
+14) Теперь удалим несколько файлов. 
+```
+sudo rm -f /mnt/file{1..3}
+ls /mnt
+```
+
+Результат:
+![Удаление трёх файлов](https://sun9-61.userapi.com/impf/GRPZ5nZ6z2xioc6D75jf-lRps3eVLianVdYfRA/wXAcZjYE-ag.jpg?size=488x75&quality=96&proxy=1&sign=f2f4f39f3c87050fad0ea94205bd535c "Удаление трёх файлов")
+
+
+15) Теперь нам необходимо восстановить файлы используя при этом созданный нами снимок.
+
+
+Но сначала удостоверимся в наличии нужных файлов в имеющемся снимке. Для этого воспользуемся командами:
+```
+sudo mkdir /snap
+sudo mount /dev/mai/snapsh /snap
+ls /snap
+sudo umount /snap
+```
+
+![Нужные файлы есть в снимке](https://sun9-12.userapi.com/impf/Ma8VkejcKtVSdIduwRPpyIwbdCi1arG_NxTxaA/C2Nld62EFf0.jpg?size=542x122&quality=96&proxy=1&sign=30a636407038b33a8da6132e3b5726e4 "Нужные файлы есть в снимке")
+
+
+Отмонтируем файловую систему и произведем слияние. Это делает следующими командами, заодно удостоверимся, что файлы оказались снова в нашей системе:
+```
+sudo umount /mnt
+sudo lvconvert --merge /dev/mai/snapsh
+sudo mount /dev/mai/first /mnt
+ls /mnt
+```
+
+Результат восстановления из снимка (файлы на месте):
+![Результат восстановления из снимка](https://sun9-41.userapi.com/impf/ss9cYGyIfplud8RntEJImYboGtQc82FchuJQrg/dUj2liMyY1k.jpg?size=601x289&quality=96&proxy=1&sign=2579668599b2a2c219a938b6dc243666 "Результат восстановления из снимка")
+
+
+16) Теперь нам надо создать зеркало нашего логического тома.
+
+Для этого понадобится добавить еще устройств в PV и VG. Это сделаем следующими командами:
+```
+sudo pvcreate /dev/sd{d,e}
+sudo vgcreate vgmirror /dev/sd{d,e}
+sudo lvcreate -l+80%FREE -m1 -n mirror1 vgmirror
+```
+
+Результат добавления устройств для зеркала:
+
+![Результат добавления устройств для зеркала](https://sun9-11.userapi.com/impf/dNq0LxlOUdgNozmJEZl3w1AFiM-rJq0jycZEjw/GR87krAsVkw.jpg?size=686x155&quality=96&proxy=1&sign=cd6fb77b0866a4aaa402054e6d1f0a92 "Результат добавления устройств для зеркала")
+
+
+Ну и теперь нужно произвести синхронизацию оригинала и зеркала. Для этого выполним команды:
+```
+sudo lvs
+sudo lsblk
+```
+
+Ну и результаты выполнения синхронизации: 
+
+![Результаты выполнения синхронизации](https://sun9-19.userapi.com/impf/o7lKBN24GZit97IWhJnmCU5laeDSHS12s0HVvQ/pwiuBmg747U.jpg?size=837x621&quality=96&proxy=1&sign=b75b4151c3f130c5e10a30930c312dc0 "Результаты выполнения синхронизации")
+
+
 
 ------------
 
