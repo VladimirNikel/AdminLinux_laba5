@@ -134,31 +134,45 @@ sudo df -h
 ```
 sudo umount /mnt
 sudo fsck -fy /dev/mai/first
-sudo resize2fs /dev/mai/first 1200M             sudo resize2fs -M /dev/mai/first
-sudo lvreduce /dev/mai/first -L 1200M           sudo lvreduce /dev/mai/first -L 1200M
+sudo resize2fs /dev/mai/first 1100M             sudo resize2fs -M /dev/mai/first
+sudo mount /dev/mai/first /mnt
+sudo df -h
+```
+<details>
+<summary>Проблема</summary>
+  
+И тут я наткнулся на проблему...
+![Точка монтирования отсутсвует"](https://sun9-40.userapi.com/N2HNDF0iieS7bnaLCfZGCJ6tHKtyZNxTfNeJ4w/6ZSRmsRm3nk.jpg "Ошибка... Точка монтирования отсутсвует")
+
+
+Тоже самое получил, когда проделал все вышеописанные шаги уже на другой виртуалке, с новыми дисками, они уже были с фиксированным значением в 1 Gb (а не динамическими)... Собственно:
+
+![Та же проблема на CentOS](https://sun9-52.userapi.com/bnkS05oH-Rw1ZHUUqUbovn9h2QtyUnZIBJ6LMA/-JxVQ4j330E.jpg "Та же проблема на CentOS")
+
+</details>
+
+Собственно, хоть командой и было указано, что хотим уменьшить размер файловой системы до 1100 Мб - но система нас ~~благополучно проигнорила~~ не послушала, так как посчитала, что ~~достойна большего~~ занимает больше места, и сделала (как видно из рисунка ниже) файловую систему размером в 1,8 Гб.
+![После уменьшения размера файловой системы](https://sun9-74.userapi.com/impf/SBF-TVzr1R6Dgqt73H6QeTTHgIMdMK1SUe7QbA/c93JqnP0Qb0.jpg?size=866x793&quality=96&proxy=1&sign=ea132b3eaddc1b2f11d78c5bc5f41775 "После уменьшения размера файловой системы")
+
+Продожим дальше выполнение команд, учитывая то, что у нас файловая система занимает все же 1800 Мб, а не как нам хотелось - 1100 Мб, надо выполнить уменьшение логического тома на такой размер, чтобы не отсечь этой *~~змее~~ файловой системе "хвост"*.
+
+```
+sudo umount /mnt
+sudo fsck -fy /dev/mai/first
+sudo lvreduce /dev/mai/first -L 1810M
 sudo fsck -fy /dev/mai/first
 sudo mount /dev/mai/first /mnt
 sudo df -h
 ```
 
-И тут я наткнулся на проблему...
-![](https://sun9-40.userapi.com/N2HNDF0iieS7bnaLCfZGCJ6tHKtyZNxTfNeJ4w/6ZSRmsRm3nk.jpg "Ошибка... Точка монтирования отсутсвует")
+Вот результаты:
 
-
-Тоже самое получил, когда проделал все вышеописанные шаги уже на другой виртуалке, с новыми дисками, они уже были с фиксированным значением в 1 Gb (а не динамическими)... Собственно:
-
-![](https://sun9-52.userapi.com/bnkS05oH-Rw1ZHUUqUbovn9h2QtyUnZIBJ6LMA/-JxVQ4j330E.jpg "Та же проблема")
-
-
-
-
-
-
+![Результат уменьшения объема логического тома](https://sun9-76.userapi.com/impf/j2_0rKWGd7gyCNjumbmndOENzcKpkLhUDdQ5Rw/j_qEcO3V9BI.jpg?size=912x848&quality=96&proxy=1&sign=6e1709c1ff0c70ca9222cd42d0d44217 "Результат уменьшения объема логического тома")
 
 
 
 ------------
 
-На этом лабораторную работу **не** считаю завершенной.
+На этом лабораторную работу считаю завершенной.
 
 Nikel, 2020
