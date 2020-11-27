@@ -187,6 +187,7 @@ sudo df -h
 ```
 sudo touch /mnt/file{1..5}
 ls /mnt
+sudo lvcreate -L 100M -s -n snapsh /dev/mai/first
 sudo lvs
 sudo lsblk
 ```
@@ -203,6 +204,7 @@ ls /mnt
 ```
 
 Результат:
+
 ![Удаление трёх файлов](https://sun9-61.userapi.com/impf/GRPZ5nZ6z2xioc6D75jf-lRps3eVLianVdYfRA/wXAcZjYE-ag.jpg?size=488x75&quality=96&proxy=1&sign=f2f4f39f3c87050fad0ea94205bd535c "Удаление трёх файлов")
 
 
